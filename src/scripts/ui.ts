@@ -1,3 +1,5 @@
+import type { HandpanNoteDef } from "./audio/notes";
+
 interface HandpanKeyLayout {
   key: string;
   xPercent: number;
@@ -46,17 +48,23 @@ const HANDPAN_SHELL_SVG = `
 
 /** Renders the note keyboard as a handpan: real, labelled <button>s in the
  * instrument's usual ring-around-a-centre-"ding" layout, over a drawn shell.
- * Keyboard operability and screen-reader affordance still come from using
- * <button> instead of a styled <div>. */
-export function renderHandpan(container: HTMLElement, keys: readonly string[]): void {
+ * Each key shows the note it sounds (large) and the QWERTY letter it's
+ * mapped to (small) as two distinct labels, since the music book below
+ * refers to notes, not letters. Keyboard operability and screen-reader
+ * affordance still come from using <button> instead of a styled <div>. */
+export function renderHandpan(container: HTMLElement, notes: readonly HandpanNoteDef[]): void {
   container.innerHTML = HANDPAN_SHELL_SVG;
-  for (const { key, xPercent, yPercent, sizePercent } of computeHandpanLayout(keys)) {
+  const layout = computeHandpanLayout(notes.map((def) => def.key));
+  const noteByKey = new Map(notes.map((def) => [def.key, def.note]));
+
+  for (const { key, xPercent, yPercent, sizePercent } of layout) {
+    const noteName = noteByKey.get(key) ?? "";
     const button = document.createElement("button");
     button.type = "button";
     button.className = "key note-key";
     button.dataset.key = key;
-    button.setAttribute("aria-label", `Play note ${key.toUpperCase()}`);
-    button.textContent = key.toUpperCase();
+    button.setAttribute("aria-label", `Play note ${noteName} (key ${key.toUpperCase()})`);
+    button.innerHTML = `<span class="note-name">${noteName}</span><span class="note-key-letter">(${key.toUpperCase()})</span>`;
     button.style.left = `${xPercent}%`;
     button.style.top = `${yPercent}%`;
     button.style.width = `${sizePercent}%`;
@@ -65,23 +73,41 @@ export function renderHandpan(container: HTMLElement, keys: readonly string[]): 
   }
 }
 
-export interface TuneKeyInfo {
-  key: string;
-  label: string;
+export interface TuneDisplay {
+  title: string;
+  notes: readonly string[];
 }
 
-/** Renders the dedicated tune keys, visually distinct from note keys via
- * the shared "tune-key" class. */
-export function renderTuneKeys(container: HTMLElement, tunes: readonly TuneKeyInfo[]): void {
+/** Renders each tune as its title and its note-name sequence -- reference
+ * only, so the player has to find the notes on the handpan themselves --
+ * plus a small "play for me" button that calls back into `onPlay` with the
+ * button itself (so the caller can disable it for the duration of playback). */
+export function renderMusicBook(
+  container: HTMLElement,
+  tunes: readonly TuneDisplay[],
+  onPlay: (tune: TuneDisplay, playButton: HTMLButtonElement) => void,
+): void {
   container.innerHTML = "";
-  for (const { key, label } of tunes) {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "key tune-key";
-    button.dataset.key = key;
-    button.setAttribute("aria-label", `Play ${label} sound`);
-    button.textContent = label;
-    container.appendChild(button);
+  for (const tune of tunes) {
+    const entry = document.createElement("article");
+    entry.className = "tune";
+
+    const heading = document.createElement("h3");
+    heading.textContent = tune.title;
+
+    const sequence = document.createElement("p");
+    sequence.className = "tune-notes";
+    sequence.textContent = tune.notes.join(" · ");
+
+    const playButton = document.createElement("button");
+    playButton.type = "button";
+    playButton.className = "tune-play";
+    playButton.textContent = "Play for me";
+    playButton.setAttribute("aria-label", `Play ${tune.title}`);
+    playButton.addEventListener("click", () => onPlay(tune, playButton));
+
+    entry.append(heading, sequence, playButton);
+    container.appendChild(entry);
   }
 }
 

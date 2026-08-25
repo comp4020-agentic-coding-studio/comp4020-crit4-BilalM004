@@ -4,7 +4,7 @@ import Layout from "../layouts/Layout.astro";
 
 <Layout
   title="An Instrument"
-  description="A synth keyboard you play live in the browser -- no samples, no score, no wrong notes."
+  description="A handpan you play live in the browser -- no samples, no score, no wrong notes."
 >
   <header>
     <nav aria-label="Primary">
@@ -14,9 +14,19 @@ import Layout from "../layouts/Layout.astro";
   <main>
     <h1>An Instrument</h1>
     <div id="instrument">
-      <div id="tune-keys" class="tune-keys"></div>
       <div id="keyboard" class="handpan"></div>
+      <button id="open-book" class="open-book" type="button">Open music book</button>
     </div>
+    <dialog id="music-book" class="music-book">
+      <form method="dialog" class="music-book-close-form">
+        <button type="submit" class="close-book" aria-label="Close music book">×</button>
+      </form>
+      <h2>Music book</h2>
+      <p class="music-book-hint">
+        Read the notes, then find them on the handpan -- or press play to hear one first.
+      </p>
+      <div id="tune-list"></div>
+    </dialog>
   </main>
   <script src="../scripts/main.ts"></script>
 </Layout>
