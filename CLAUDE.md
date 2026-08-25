@@ -4,6 +4,10 @@ Your starter repo for a COMP4020 prototype: a static site in HTML/CSS/TypeScript
 that builds to plain HTML/CSS/JS and deploys to GitHub Pages. The deployed site
 is what gets marked, not this repo.
 
+Built with [Astro](https://astro.build) (the course default) --- pages are
+`.astro` files under `src/`, not plain HTML; `astro.config.ts` and `pnpm
+typecheck` (`astro check`) are the framework-specific bits.
+
 The
 [course website](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/)
 publishes this deliverable's brief and spec, and this repo's name tells you
@@ -17,6 +21,10 @@ which deliverable applies. Read both before you plan or build.
   your mental model of it isn't.
 - When a check fails, read its output before you change anything.
 - Never commit a red state.
+- Small tweaks (animation timing, copy, spacing, colour) don't need a full
+  `pnpm check` or browser pass on their own --- make the edit, describe what
+  changed, and ask before verifying. Batch verification once the direction is
+  settled, not after every micro-adjustment.
 
 ## The link-preview card
 
