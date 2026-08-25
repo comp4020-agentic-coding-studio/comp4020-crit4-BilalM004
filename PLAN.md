@@ -36,13 +36,21 @@ replaces that placeholder with the instrument.
 1. **Normal keyboard**: ~10 keys mapped to a one-octave-plus chromatic run on
    the home row (`a s d f g h j k l ;` white-key style, matching the common
    web-synth QWERTY convention referenced by MDN's simple synth example).
-   Each key/on-screen button is one oscillator voice with an ADSR-style gain
-   envelope: fast attack, sustain while held, release on key-up/pointer-up.
+   Each key/on-screen button triggers a **handpan-like struck note**
+   (`HandpanNote`: 3 sine `Voice`s at 1x/2x/3x the fundamental, stacked gains,
+   long ~1.8s decay) rather than a single raw oscillator — chosen over a
+   plain tone because a percussive, resonant timbre reads as more "an
+   instrument" to a stranger playing uninstructed. Attack/release still an
+   ADSR-style gain envelope per partial; sustain while held, release on
+   key-up/pointer-up.
 2. **Hold-duration expressiveness**: while a note is held, a `setTargetAtTime`
    ramp slowly increases a filter's cutoff (or a vibrato LFO's depth) so a
    quick tap sounds plain and a held note blooms — same code path for mouse,
    touch, and keyboard since it's driven by note-on/note-off timing, not
-   pointer movement.
+   pointer movement. For the handpan voice specifically this reads as the
+   struck overtones blooming a little further before the strike decays,
+   rather than a sustained tone brightening (a struck note isn't sustained
+   by continued energy the way a bowed/blown one is).
 3. **3 dedicated "tune" keys**, visually distinct (different key colour +
    icon/label), each triggering a short scheduled sequence of oscillator
    notes built from the same voice primitive:
@@ -76,6 +84,11 @@ Each bullet is one deliverable to pick up in its own future chat:
   startup) or a small dedicated FM node graph (notification -- FM needs a
   modulator patched into the carrier's frequency, a different shape than
   Voice's static filter chain, so it isn't built through Voice).
+- [x] `src/scripts/audio/handpan.ts` — `HandpanNote` class: the normal
+  keyboard's default timbre. Stacks 3 `Voice` instances (sine, ratios
+  1x/2x/3x the fundamental, decreasing gain) sharing one strike time and
+  release, giving an inharmonic-ish, long-decay struck tone instead of a
+  single-oscillator pluck.
 - [ ] `src/scripts/audio/loop.ts` — `LoopGrid` class: lookahead scheduler
   (setInterval polling `currentTime` against a beat grid, per the standard
   Web Audio timing pattern), 2 `LoopSlot`s each holding a recorded event

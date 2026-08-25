@@ -1,6 +1,6 @@
 import { getAudioContext, resumeOnFirstGesture } from "./audio/context";
+import { HandpanNote } from "./audio/handpan";
 import { playTune, TUNE_LABELS, type TuneId } from "./audio/tunes";
-import { Voice } from "./audio/voice";
 import { renderKeyboard, renderTuneKeys, setKeyHeld, type TuneKeyInfo } from "./ui";
 
 /** QWERTY home row, white-key style -- the common web-synth convention. */
@@ -34,29 +34,27 @@ export function wireKeyboard(root: HTMLElement, keyboardEl: HTMLElement, tuneKey
   }));
   renderTuneKeys(tuneKeysEl, tuneKeys);
 
-  const activeVoices = new Map<string, Voice>();
+  const activeNotes = new Map<string, HandpanNote>();
   const activeTuneKeys = new Set<string>();
 
   function noteOn(key: string): void {
-    if (activeVoices.has(key)) return; // already sounding -- ignore OS key-repeat
+    if (activeNotes.has(key)) return; // already sounding -- ignore OS key-repeat
     const freq = NOTE_FREQUENCIES.get(key);
     if (freq === undefined) return;
 
     const ctx = getAudioContext();
     resumeOnFirstGesture(ctx);
 
-    const voice = new Voice(ctx);
-    voice.noteOn(freq, ctx.currentTime);
-    activeVoices.set(key, voice);
+    activeNotes.set(key, new HandpanNote(ctx, freq, ctx.currentTime));
     setKeyHeld(root, key, true);
   }
 
   function noteOff(key: string): void {
-    const voice = activeVoices.get(key);
-    if (!voice) return;
+    const note = activeNotes.get(key);
+    if (!note) return;
 
-    voice.noteOff(getAudioContext().currentTime);
-    activeVoices.delete(key);
+    note.noteOff(getAudioContext().currentTime);
+    activeNotes.delete(key);
     setKeyHeld(root, key, false);
   }
 
