@@ -11,6 +11,9 @@ import Layout from "../layouts/Layout.astro";
       <h1>The Online Handpan Instrument</h1>
       <p class="tagline">Play how you like, or try a famous song from the book.</p>
     </div>
+    <button id="label-toggle" class="label-toggle" type="button" aria-pressed="false">
+      Show keyboard letters
+    </button>
     <div class="stage">
       <section id="music-book" class="music-book">
         <button id="book-cover" class="book-cover" type="button" aria-expanded="false" aria-controls="book-pages">
@@ -20,6 +23,7 @@ import Layout from "../layouts/Layout.astro";
         <div id="book-pages" class="book-pages" hidden>
           <button id="book-close" class="close-book" type="button" aria-label="Close music book">×</button>
           <div class="book-page" id="book-page"></div>
+          <p id="book-legend" class="legend">Tune notes shown as note names.</p>
           <div class="book-nav">
             <button id="book-prev" class="book-nav-btn" type="button" aria-label="Previous page">‹</button>
             <span id="book-page-indicator" class="book-page-indicator"></span>
@@ -29,9 +33,7 @@ import Layout from "../layouts/Layout.astro";
       </section>
       <div id="instrument">
         <div id="keyboard" class="handpan"></div>
-        <button id="label-toggle" class="label-toggle" type="button" aria-pressed="false">
-          Show keyboard letters
-        </button>
+        <p id="instrument-legend" class="legend">Bold shows the note name; its keyboard letter is in parentheses.</p>
       </div>
     </div>
   </main>

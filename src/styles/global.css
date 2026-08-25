@@ -408,9 +408,17 @@ a {
   content: ")";
 }
 
+.legend {
+  margin: 0.75rem 0 0;
+  font-size: 0.78rem;
+  color: var(--ink);
+  opacity: 0.6;
+  text-align: center;
+}
+
 .label-toggle {
   display: block;
-  margin: 1.25rem auto 0;
+  margin: 0 auto;
   padding: 0.5rem 1.1rem;
   border: 1px solid rgba(244, 223, 174, 0.25);
   border-radius: 999px;
