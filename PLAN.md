@@ -62,12 +62,14 @@ replaces that placeholder with the instrument.
 
 Each bullet is one deliverable to pick up in its own future chat:
 
-- [ ] `src/scripts/audio/context.ts` — `getAudioContext()` singleton +
+- [x] `src/scripts/audio/context.ts` — `getAudioContext()` singleton +
   `resumeOnFirstGesture()` (context starts suspended; resume inside the
   first pointerdown/keydown handler, same event that triggers the first note).
-- [ ] `src/scripts/audio/voice.ts` — `Voice` class: oscillator(s) → filter →
+- [x] `src/scripts/audio/voice.ts` — `Voice` class: oscillator(s) → filter →
   gain, `noteOn(freq, startTime)` / `noteOff(time)`, owns the hold-duration
   ramp. Reused by both the normal keyboard and the tune-key sequences.
+  (Single-oscillator only so far; tune-key chord stacking will extend this
+  when `tunes.ts` lands.)
 - [ ] `src/scripts/audio/tunes.ts` — the 3 tune definitions (arrays of
   `{ freq, offset, duration }` events) and a `playTune(id, ctx)` function
   that schedules `Voice` instances at the right times.
@@ -80,15 +82,23 @@ Each bullet is one deliverable to pick up in its own future chat:
   `pointerdown`/`pointerup`/`pointerleave` on the on-screen buttons to the
   same trigger functions, and feeds every triggered note into the loop
   grid's active recording slot (if any).
+  Plain 10-key note map + keydown/keyup + pointer wiring done; tune-id
+  dispatch and feeding the loop grid are still pending.
 - [ ] `src/scripts/ui.ts` — renders the on-screen keyboard (normal keys + 3 tune
   keys as real `<button>` elements with accessible labels), active/held
   visual state, and the loop slot controls + playing/muted/empty indicators.
-- [ ] `src/scripts/main.ts` — replaces the starter placeholder; wires the above
-  together on `DOMContentLoaded`.
+  Normal-key rendering + held-state toggle done; tune keys and loop slot
+  controls still pending.
+- [x] `src/scripts/main.ts` — replaces the starter placeholder; wires the above
+  together. (Runs as an Astro module script placed after the markup, so no
+  `DOMContentLoaded` listener is needed — will need one added if tune/loop
+  wiring moves earlier in the page.)
 - [ ] `src/pages/index.astro` — replace the placeholder `<h1>`/paragraph with
   the instrument's container markup (single `h1` kept, `nav` landmark kept
   as-is per the invariants); update `Layout`'s `description` prop to
   describe the instrument for the og-card/meta-description invariants.
+  `<h1>`, description and `#keyboard` container done; tune-key and loop-grid
+  markup still pending.
 - [ ] `spec/instrument.test.ts` — new spec test file (alongside
   `invariants.test.ts`) asserting the mechanically-checkable contract lines:
   every key/loop control is a real `<button>` with an accessible name (keyboard

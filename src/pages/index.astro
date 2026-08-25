@@ -2,19 +2,18 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="COMP4020 prototype">
+<Layout
+  title="An Instrument"
+  description="A synth keyboard you play live in the browser -- no samples, no score, no wrong notes."
+>
   <header>
     <nav aria-label="Primary">
       <a href="./">Home</a>
     </nav>
   </header>
   <main>
-    <h1>COMP4020 prototype</h1>
-    <p>
-      Replace this with your prototype. This week's brief is on the course
-      website; <code>spec/README.md</code> explains how the checks in this repo
-      relate to it.
-    </p>
+    <h1>An Instrument</h1>
+    <div id="keyboard" class="keyboard"></div>
   </main>
   <script src="../scripts/main.ts"></script>
 </Layout>
