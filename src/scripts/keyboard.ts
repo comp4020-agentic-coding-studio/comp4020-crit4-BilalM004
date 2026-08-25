@@ -1,6 +1,7 @@
 import { getAudioContext, resumeOnFirstGesture } from "./audio/context";
 import { HandpanNote } from "./audio/handpan";
 import { HANDPAN_NOTES, NOTE_BY_KEY } from "./audio/notes";
+import { recordNote } from "./note-recorder";
 import { renderHandpan, setKeyHeld } from "./ui";
 
 /** Renders the handpan into `keyboardEl`, then wires pointer and physical-key
@@ -20,6 +21,7 @@ export function wireKeyboard(root: HTMLElement, keyboardEl: HTMLElement): void {
 
     activeNotes.set(key, new HandpanNote(ctx, def.freq, ctx.currentTime));
     setKeyHeld(root, key, true);
+    recordNote(def.note);
   }
 
   function noteOff(key: string): void {

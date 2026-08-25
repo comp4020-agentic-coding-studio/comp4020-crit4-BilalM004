@@ -1,6 +1,7 @@
 import { wireKeyboard } from "./keyboard";
 import { wireMusicBook } from "./book";
 import { getLabelMode, onLabelModeChange, setLabelMode, type LabelMode } from "./label-mode";
+import { wireNotepad } from "./notepad";
 
 const instrument = document.querySelector<HTMLElement>("#instrument");
 const keyboard = document.querySelector<HTMLElement>("#keyboard");
@@ -49,5 +50,22 @@ if (instrument && bookCover && bookPages && bookPage && bookPrev && bookNext && 
     next: bookNext,
     close: bookClose,
     indicator: bookIndicator,
+  });
+}
+
+const recordToggle = document.querySelector<HTMLButtonElement>("#record-toggle");
+const notepadPage = document.querySelector<HTMLElement>("#notepad-page");
+const notepadPrev = document.querySelector<HTMLButtonElement>("#notepad-prev");
+const notepadNext = document.querySelector<HTMLButtonElement>("#notepad-next");
+const notepadIndicator = document.querySelector<HTMLElement>("#notepad-page-indicator");
+const notepadClear = document.querySelector<HTMLButtonElement>("#notepad-clear");
+if (recordToggle && notepadPage && notepadPrev && notepadNext && notepadIndicator && notepadClear) {
+  wireNotepad({
+    toggle: recordToggle,
+    page: notepadPage,
+    prev: notepadPrev,
+    next: notepadNext,
+    indicator: notepadIndicator,
+    clear: notepadClear,
   });
 }

@@ -11,9 +11,11 @@ import Layout from "../layouts/Layout.astro";
       <h1>The Online Handpan Instrument</h1>
       <p class="tagline">Play how you like, or try a famous song from the book.</p>
     </div>
-    <button id="label-toggle" class="label-toggle" type="button" aria-pressed="false">
-      Show keyboard letters
-    </button>
+    <div class="toggle-row">
+      <button id="label-toggle" class="label-toggle" type="button" aria-pressed="false">
+        Show keyboard letters
+      </button>
+    </div>
     <div class="stage">
       <section id="music-book" class="music-book">
         <button id="book-cover" class="book-cover" type="button" aria-expanded="false" aria-controls="book-pages">
@@ -35,6 +37,23 @@ import Layout from "../layouts/Layout.astro";
         <div id="keyboard" class="handpan"></div>
         <p id="instrument-legend" class="legend">Bold shows the note name; its keyboard letter is in parentheses.</p>
       </div>
+      <section id="notepad" class="notepad">
+        <div class="notepad-header">
+          <h2 class="notepad-title">Notes Played</h2>
+          <div class="notepad-actions">
+            <button id="record-toggle" class="label-toggle" type="button" aria-pressed="false">
+              Record notes played
+            </button>
+            <button id="notepad-clear" class="notepad-clear" type="button">Clear</button>
+          </div>
+        </div>
+        <div class="book-page notepad-page" id="notepad-page"></div>
+        <div class="book-nav">
+          <button id="notepad-prev" class="book-nav-btn" type="button" aria-label="Previous page">‹</button>
+          <span id="notepad-page-indicator" class="book-page-indicator"></span>
+          <button id="notepad-next" class="book-nav-btn" type="button" aria-label="Next page">›</button>
+        </div>
+      </section>
     </div>
   </main>
   <script src="../scripts/main.ts"></script>

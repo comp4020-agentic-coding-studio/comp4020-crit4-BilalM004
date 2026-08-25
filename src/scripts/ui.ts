@@ -161,6 +161,26 @@ export function renderBookPage(
   return { playPauseButton, stopButton };
 }
 
+/** Renders one page of the notepad: the recorded notes so far (already
+ * formatted by the caller per the label-mode toggle, same as the book's
+ * note-sequence line), or a placeholder explaining what to do next when
+ * there's nothing to show yet -- which differs depending on whether
+ * recording is currently on. */
+export function renderNotepadPage(pageEl: HTMLElement, notesText: string, hasNotes: boolean, recordingEnabled: boolean): void {
+  pageEl.innerHTML = "";
+  const p = document.createElement("p");
+  if (hasNotes) {
+    p.className = "tune-notes notepad-notes";
+    p.textContent = notesText;
+  } else {
+    p.className = "notepad-empty";
+    p.textContent = recordingEnabled
+      ? "Play a note to start recording."
+      : "Turn on recording to start capturing what you play.";
+  }
+  pageEl.appendChild(p);
+}
+
 export function setKeyHeld(root: ParentNode, key: string, held: boolean): void {
   const button = root.querySelector<HTMLButtonElement>(`[data-key="${key}"]`);
   button?.classList.toggle("held", held);
