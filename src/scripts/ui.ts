@@ -14,7 +14,27 @@ export function renderKeyboard(container: HTMLElement, keys: readonly string[]):
   }
 }
 
-export function setKeyHeld(container: HTMLElement, key: string, held: boolean): void {
-  const button = container.querySelector<HTMLButtonElement>(`[data-key="${key}"]`);
+export interface TuneKeyInfo {
+  key: string;
+  label: string;
+}
+
+/** Renders the dedicated tune keys, visually distinct from note keys via
+ * the shared "tune-key" class. */
+export function renderTuneKeys(container: HTMLElement, tunes: readonly TuneKeyInfo[]): void {
+  container.innerHTML = "";
+  for (const { key, label } of tunes) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "key tune-key";
+    button.dataset.key = key;
+    button.setAttribute("aria-label", `Play ${label} sound`);
+    button.textContent = label;
+    container.appendChild(button);
+  }
+}
+
+export function setKeyHeld(root: ParentNode, key: string, held: boolean): void {
+  const button = root.querySelector<HTMLButtonElement>(`[data-key="${key}"]`);
   button?.classList.toggle("held", held);
 }

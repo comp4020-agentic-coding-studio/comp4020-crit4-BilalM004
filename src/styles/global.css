@@ -52,3 +52,25 @@ a {
   outline: 3px solid #0b5fff;
   outline-offset: 2px;
 }
+
+.tune-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  touch-action: none;
+}
+
+.tune-key {
+  background: #f4dfae;
+  flex: 1 1 6rem;
+}
+
+.tune-key:hover {
+  background: #edd08a;
+}
+
+.tune-key.held {
+  background: #b8791a;
+  color: #fff;
+}

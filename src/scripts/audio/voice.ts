@@ -1,27 +1,51 @@
-const ATTACK_SECONDS = 0.015;
-const RELEASE_SECONDS = 0.15;
-const PEAK_GAIN = 0.25;
-const BASE_CUTOFF_HZ = 500;
-const BRIGHT_CUTOFF_HZ = 3200;
-const HOLD_RAMP_TIME_CONSTANT = 1.4;
+export interface VoiceOptions {
+  type?: OscillatorType;
+  attackSeconds?: number;
+  releaseSeconds?: number;
+  peakGain?: number;
+  baseCutoffHz?: number;
+  brightCutoffHz?: number;
+  holdRampTimeConstant?: number;
+  detuneCents?: number;
+}
+
+const DEFAULT_OPTIONS: Required<Omit<VoiceOptions, "detuneCents">> = {
+  type: "sawtooth",
+  attackSeconds: 0.015,
+  releaseSeconds: 0.15,
+  peakGain: 0.25,
+  baseCutoffHz: 500,
+  brightCutoffHz: 3200,
+  holdRampTimeConstant: 1.4,
+};
 
 /**
  * One oscillator -> filter -> gain voice. Single-use: noteOn starts the
  * oscillator, noteOff schedules its stop. Create a new Voice per note rather
  * than reusing one, since a Web Audio oscillator can only ever be started once.
+ *
+ * Options default to the normal-keyboard envelope; tune sequences override
+ * them (brighter/shorter for a pluck, slower attack for a chord swell) while
+ * sharing this same primitive.
  */
 export class Voice {
   private readonly osc: OscillatorNode;
   private readonly filter: BiquadFilterNode;
   private readonly gain: GainNode;
+  private readonly options: Required<Omit<VoiceOptions, "detuneCents">>;
 
-  constructor(ctx: AudioContext, type: OscillatorType = "sawtooth") {
+  constructor(ctx: AudioContext, options: VoiceOptions = {}) {
+    this.options = { ...DEFAULT_OPTIONS, ...options };
+
     this.osc = ctx.createOscillator();
-    this.osc.type = type;
+    this.osc.type = this.options.type;
+    if (options.detuneCents) {
+      this.osc.detune.value = options.detuneCents;
+    }
 
     this.filter = ctx.createBiquadFilter();
     this.filter.type = "lowpass";
-    this.filter.frequency.value = BASE_CUTOFF_HZ;
+    this.filter.frequency.value = this.options.baseCutoffHz;
 
     this.gain = ctx.createGain();
     this.gain.gain.value = 0;
@@ -40,24 +64,28 @@ export class Voice {
   /** Start the note. The filter cutoff then drifts open the longer the note
    * stays held (see noteOff) -- this is the hold-duration expressiveness. */
   noteOn(freq: number, startTime: number): void {
+    const { attackSeconds, peakGain, baseCutoffHz, brightCutoffHz, holdRampTimeConstant } = this.options;
+
     this.osc.frequency.setValueAtTime(freq, startTime);
 
     this.gain.gain.setValueAtTime(0, startTime);
-    this.gain.gain.linearRampToValueAtTime(PEAK_GAIN, startTime + ATTACK_SECONDS);
+    this.gain.gain.linearRampToValueAtTime(peakGain, startTime + attackSeconds);
 
-    this.filter.frequency.setValueAtTime(BASE_CUTOFF_HZ, startTime);
-    this.filter.frequency.setTargetAtTime(BRIGHT_CUTOFF_HZ, startTime, HOLD_RAMP_TIME_CONSTANT);
+    this.filter.frequency.setValueAtTime(baseCutoffHz, startTime);
+    this.filter.frequency.setTargetAtTime(brightCutoffHz, startTime, holdRampTimeConstant);
 
     this.osc.start(startTime);
   }
 
   noteOff(time: number): void {
+    const { releaseSeconds } = this.options;
+
     this.gain.gain.cancelScheduledValues(time);
     this.gain.gain.setValueAtTime(this.gain.gain.value, time);
-    this.gain.gain.linearRampToValueAtTime(0, time + RELEASE_SECONDS);
+    this.gain.gain.linearRampToValueAtTime(0, time + releaseSeconds);
 
     this.filter.frequency.cancelScheduledValues(time);
 
-    this.osc.stop(time + RELEASE_SECONDS + 0.05);
+    this.osc.stop(time + releaseSeconds + 0.05);
   }
 }
