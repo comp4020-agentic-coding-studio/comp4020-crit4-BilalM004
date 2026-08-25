@@ -30,57 +30,188 @@ a {
   outline-offset: 2px;
 }
 
-.open-book {
-  display: block;
-  margin: 1.5rem auto 0;
-  padding: 0.6rem 1.25rem;
-  border-radius: 999px;
-  background: #f4dfae;
-  font-size: 0.95rem;
-}
-
-.open-book:hover {
-  background: #edd08a;
-}
-
+/* Cover and pages share this single grid cell (see the grid-row/-column
+   below) so the open state sits exactly where the closed cover was, rather
+   than appearing as a second element below it -- one book, not two. */
 .music-book {
-  width: min(90vw, 32rem);
-  max-height: 80vh;
-  overflow-y: auto;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 1.5rem;
+  width: min(92vw, 21rem);
+  margin: 0 auto;
+  display: grid;
+  perspective: 1200px;
 }
 
-.music-book::backdrop {
-  background: rgba(10, 12, 16, 0.55);
+.book-cover,
+.book-pages {
+  grid-row: 1;
+  grid-column: 1;
 }
 
-.music-book-close-form {
+/* Closed book: a cover you click to open. Same warm gold accent the rest
+   of the site uses (echoed in .tune-play), embossed onto a dark leather
+   cover instead of a pill button. Fades/tilts away (rather than just
+   vanishing) as the page opens over it -- see book.ts's is-opening toggle. */
+.book-cover {
   display: flex;
-  justify-content: flex-end;
-  margin: 0 0 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  border: none;
+  border-radius: 0.4rem 0.9rem 0.9rem 0.4rem;
+  background: linear-gradient(100deg, #1c1210 0%, #3a2420 8%, #5c342b 50%, #3a2420 92%, #1c1210 100%);
+  box-shadow:
+    inset 0.3rem 0 0.5rem rgba(0, 0, 0, 0.5),
+    0 0.5rem 1.25rem rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transform-origin: top center;
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 220ms ease;
+}
+
+.book-cover:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    inset 0.3rem 0 0.5rem rgba(0, 0, 0, 0.5),
+    0 0.75rem 1.5rem rgba(0, 0, 0, 0.3);
+}
+
+.book-cover.is-opening {
+  opacity: 0;
+  transform: rotateX(-35deg) scaleY(0.9);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-cover {
+    transition: none;
+  }
+}
+
+.book-cover-title {
+  font-size: clamp(1.1rem, 4vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #f4dfae;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.6);
+}
+
+.book-cover-hint {
+  font-size: 0.85rem;
+  color: #d8c9a8;
+  opacity: 0.85;
+}
+
+/* Open book: the cover hides itself and this takes its place (see
+   book.ts's open/close), so it reads as the same book opening rather than
+   a second one appearing below the closed cover. One wide page, re-rendered
+   per tune by book.ts. */
+.book-pages {
+  position: relative;
+  transform-origin: top center;
+  animation: book-open 200ms ease;
+}
+
+@keyframes book-open {
+  from {
+    opacity: 0;
+    transform: scaleY(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-pages {
+    animation: none;
+  }
 }
 
 .close-book {
+  position: absolute;
+  top: -0.5rem;
+  right: -0.5rem;
+  z-index: 1;
+  width: 2rem;
+  height: 2rem;
   border: none;
-  background: transparent;
-  color: #1a1a1a;
-  font-size: 1.5rem;
+  border-radius: 50%;
+  background: #1a1a1a;
+  color: #f4dfae;
+  font-size: 1.1rem;
   line-height: 1;
   cursor: pointer;
 }
 
-.music-book-hint {
-  margin-top: 0;
-  color: #4a4a4a;
-  font-size: 0.9rem;
+.book-page {
+  position: relative;
+  padding: 1.5rem;
+  min-height: 14rem;
+  border-radius: 0.5rem;
+  background: #faf3e3;
+  box-shadow:
+    0 0.5rem 1.5rem rgba(0, 0, 0, 0.2),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
-.tune + .tune {
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid #e5e9f0;
+/* .tune is a fresh element every page turn, so the animation plays again
+   on each turn without any JS restart trick. */
+.book-page .tune {
+  animation: page-settle 180ms ease;
+}
+
+@keyframes page-settle {
+  from {
+    opacity: 0;
+    transform: translateX(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .book-page .tune {
+    animation: none;
+  }
+}
+
+.book-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.75rem;
+}
+
+.book-nav-btn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: none;
+  border-radius: 50%;
+  background: #e5e9f0;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.book-nav-btn:hover:not(:disabled) {
+  background: #d3dae6;
+}
+
+.book-nav-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.book-page-indicator {
+  min-width: 3.5rem;
+  text-align: center;
+  color: #8a5a2b;
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .tune h3 {
@@ -93,19 +224,38 @@ a {
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
-.tune-play {
+.tune-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.tune-play,
+.tune-stop {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: none;
   border-radius: 0.5rem;
   background: #e5e9f0;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.9rem;
+  color: #333a45;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
 }
 
-.tune-play:hover:not(:disabled) {
+.tune-play svg,
+.tune-stop svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.tune-play:hover:not(:disabled),
+.tune-stop:hover:not(:disabled) {
   background: #d3dae6;
 }
 
-.tune-play:disabled {
+.tune-play:disabled,
+.tune-stop:disabled {
   opacity: 0.6;
   cursor: default;
 }

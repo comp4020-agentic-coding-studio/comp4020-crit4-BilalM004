@@ -9,6 +9,8 @@ export interface VoiceOptions {
   detuneCents?: number;
 }
 
+const QUICK_STOP_SECONDS = 0.05;
+
 const DEFAULT_OPTIONS: Required<Omit<VoiceOptions, "detuneCents">> = {
   type: "sawtooth",
   attackSeconds: 0.015,
@@ -87,5 +89,19 @@ export class Voice {
     this.filter.frequency.cancelScheduledValues(time);
 
     this.osc.stop(time + releaseSeconds + 0.05);
+  }
+
+  /** Cuts the note short, e.g. because playback was stopped mid-tune. A
+   * quick fade (rather than noteOff's full release) avoids a click; if the
+   * note hasn't started yet (its noteOn was scheduled for later), this
+   * cancels it before it ever sounds. */
+  stopNow(time: number): void {
+    this.gain.gain.cancelScheduledValues(time);
+    this.gain.gain.setValueAtTime(this.gain.gain.value, time);
+    this.gain.gain.linearRampToValueAtTime(0, time + QUICK_STOP_SECONDS);
+
+    this.filter.frequency.cancelScheduledValues(time);
+
+    this.osc.stop(time + QUICK_STOP_SECONDS + 0.01);
   }
 }

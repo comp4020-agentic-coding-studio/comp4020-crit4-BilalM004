@@ -78,37 +78,77 @@ export interface TuneDisplay {
   notes: readonly string[];
 }
 
-/** Renders each tune as its title and its note-name sequence -- reference
- * only, so the player has to find the notes on the handpan themselves --
- * plus a small "play for me" button that calls back into `onPlay` with the
- * button itself (so the caller can disable it for the duration of playback). */
-export function renderMusicBook(
-  container: HTMLElement,
-  tunes: readonly TuneDisplay[],
-  onPlay: (tune: TuneDisplay, playButton: HTMLButtonElement) => void,
-): void {
-  container.innerHTML = "";
-  for (const tune of tunes) {
-    const entry = document.createElement("article");
-    entry.className = "tune";
+export interface TuneControls {
+  playPauseButton: HTMLButtonElement;
+  stopButton: HTMLButtonElement;
+}
 
-    const heading = document.createElement("h3");
-    heading.textContent = tune.title;
+/** Drawn as plain shapes rather than an icon font, so they render crisply
+ * at any size and pick up the button's own text colour via currentColor. */
+const PLAY_ICON_SVG = `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.3v11.4a.6.6 0 0 0 .92.5l9-5.7a.6.6 0 0 0 0-1l-9-5.7a.6.6 0 0 0-.92.5z" fill="currentColor"/></svg>`;
+const PAUSE_ICON_SVG = `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="3.5" y="2.5" width="3" height="11" rx="0.5" fill="currentColor"/><rect x="9.5" y="2.5" width="3" height="11" rx="0.5" fill="currentColor"/></svg>`;
+const STOP_ICON_SVG = `<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><rect x="3" y="3" width="10" height="10" rx="1" fill="currentColor"/></svg>`;
 
-    const sequence = document.createElement("p");
-    sequence.className = "tune-notes";
-    sequence.textContent = tune.notes.join(" · ");
-
-    const playButton = document.createElement("button");
-    playButton.type = "button";
-    playButton.className = "tune-play";
-    playButton.textContent = "Play for me";
-    playButton.setAttribute("aria-label", `Play ${tune.title}`);
-    playButton.addEventListener("click", () => onPlay(tune, playButton));
-
-    entry.append(heading, sequence, playButton);
-    container.appendChild(entry);
+/** Swaps the play/pause button's icon and label to match playback state.
+ * `resuming` distinguishes a fresh play from picking a paused tune back up,
+ * since both show the same play icon but read differently to a screen
+ * reader. */
+export function setPlayPauseIcon(button: HTMLButtonElement, tune: TuneDisplay, state: "playing" | "paused" | "stopped"): void {
+  if (state === "playing") {
+    button.innerHTML = PAUSE_ICON_SVG;
+    button.setAttribute("aria-label", `Pause ${tune.title}`);
+  } else {
+    button.innerHTML = PLAY_ICON_SVG;
+    button.setAttribute("aria-label", `${state === "paused" ? "Resume" : "Play"} ${tune.title}`);
   }
+}
+
+/** Renders a single tune -- its title and its note-name sequence for
+ * reference only, so the player has to find the notes on the handpan
+ * themselves -- plus play/pause and stop buttons that call back into
+ * `onPlayPause`/`onStop`. One tune fills the whole page; turning the page
+ * calls this again with the next tune. Returns the rendered buttons so the
+ * caller can keep updating their icon/label/disabled state as playback
+ * progresses, without re-rendering the whole page. */
+export function renderBookPage(
+  pageEl: HTMLElement,
+  tune: TuneDisplay,
+  onPlayPause: (tune: TuneDisplay, button: HTMLButtonElement) => void,
+  onStop: (tune: TuneDisplay, button: HTMLButtonElement) => void,
+): TuneControls {
+  pageEl.innerHTML = "";
+
+  const entry = document.createElement("article");
+  entry.className = "tune";
+
+  const heading = document.createElement("h3");
+  heading.textContent = tune.title;
+
+  const sequence = document.createElement("p");
+  sequence.className = "tune-notes";
+  sequence.textContent = tune.notes.join(" · ");
+
+  const controls = document.createElement("div");
+  controls.className = "tune-controls";
+
+  const playPauseButton = document.createElement("button");
+  playPauseButton.type = "button";
+  playPauseButton.className = "tune-play";
+  playPauseButton.addEventListener("click", () => onPlayPause(tune, playPauseButton));
+
+  const stopButton = document.createElement("button");
+  stopButton.type = "button";
+  stopButton.className = "tune-stop";
+  stopButton.innerHTML = STOP_ICON_SVG;
+  stopButton.setAttribute("aria-label", `Stop ${tune.title}`);
+  stopButton.disabled = true;
+  stopButton.addEventListener("click", () => onStop(tune, stopButton));
+
+  setPlayPauseIcon(playPauseButton, tune, "stopped");
+  controls.append(playPauseButton, stopButton);
+  entry.append(heading, sequence, controls);
+  pageEl.appendChild(entry);
+  return { playPauseButton, stopButton };
 }
 
 export function setKeyHeld(root: ParentNode, key: string, held: boolean): void {

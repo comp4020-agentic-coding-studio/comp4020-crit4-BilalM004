@@ -7,9 +7,21 @@ if (instrument && keyboard) {
   wireKeyboard(instrument, keyboard);
 }
 
-const openBook = document.querySelector<HTMLButtonElement>("#open-book");
-const bookDialog = document.querySelector<HTMLDialogElement>("#music-book");
-const tuneList = document.querySelector<HTMLElement>("#tune-list");
-if (instrument && openBook && bookDialog && tuneList) {
-  wireMusicBook(instrument, openBook, bookDialog, tuneList);
+const bookCover = document.querySelector<HTMLButtonElement>("#book-cover");
+const bookPages = document.querySelector<HTMLElement>("#book-pages");
+const bookPage = document.querySelector<HTMLElement>("#book-page");
+const bookPrev = document.querySelector<HTMLButtonElement>("#book-prev");
+const bookNext = document.querySelector<HTMLButtonElement>("#book-next");
+const bookClose = document.querySelector<HTMLButtonElement>("#book-close");
+const bookIndicator = document.querySelector<HTMLElement>("#book-page-indicator");
+if (instrument && bookCover && bookPages && bookPage && bookPrev && bookNext && bookClose && bookIndicator) {
+  wireMusicBook(instrument, {
+    cover: bookCover,
+    pages: bookPages,
+    page: bookPage,
+    prev: bookPrev,
+    next: bookNext,
+    close: bookClose,
+    indicator: bookIndicator,
+  });
 }

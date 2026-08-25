@@ -16,4 +16,8 @@ export default defineConfig({
   base: "/comp4020-crit4-BilalM004",
   build: { format: "preserve" },
   compressHTML: true,
+  // This repo lives under /mnt/c (a Windows drive mounted into WSL2), where
+  // inotify events from edits don't reliably reach Vite's file watcher --
+  // polling is the standard workaround for that filesystem boundary.
+  vite: { server: { watch: { usePolling: true, interval: 100 } } },
 });

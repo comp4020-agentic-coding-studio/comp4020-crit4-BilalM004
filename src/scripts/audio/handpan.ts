@@ -49,4 +49,10 @@ export class HandpanNote {
       voice.noteOff(time);
     }
   }
+
+  stopNow(time: number): void {
+    for (const voice of this.voices) {
+      voice.stopNow(time);
+    }
+  }
 }
