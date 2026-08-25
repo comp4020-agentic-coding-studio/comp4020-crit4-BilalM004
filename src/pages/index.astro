@@ -3,16 +3,19 @@ import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout
-  title="An Instrument"
+  title="The Online Handpan Instrument"
   description="A handpan you play live in the browser -- no samples, no score, no wrong notes."
 >
-  <header>
+  <header class="site-header">
     <nav aria-label="Primary">
       <a href="./">Home</a>
     </nav>
   </header>
   <main>
-    <h1>An Instrument</h1>
+    <div class="hero">
+      <h1>The Online Handpan Instrument</h1>
+      <p class="tagline">Play how you like, or try a famous song from the book.</p>
+    </div>
     <div class="stage">
       <section id="music-book" class="music-book">
         <button id="book-cover" class="book-cover" type="button" aria-expanded="false" aria-controls="book-pages">

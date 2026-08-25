@@ -1,9 +1,19 @@
+:root {
+  --ink: #f1e6d3;
+  --ink-dim: #b8a888;
+  --gold: #d9a84e;
+  --gold-light: #f4dfae;
+  --stage-bg: #14100d;
+}
+
 body {
   margin: 0;
   padding: 2rem;
   font-family: system-ui, sans-serif;
   line-height: 1.6;
-  color: #1a1a1a;
+  color: var(--ink);
+  background: radial-gradient(ellipse 65% 55% at 50% 34%, rgba(217, 168, 78, 0.16), transparent 70%), var(--stage-bg);
+  min-height: 100vh;
 }
 
 main {
@@ -11,19 +21,66 @@ main {
   margin: 0 auto;
 }
 
+.site-header nav {
+  display: flex;
+  justify-content: center;
+  padding-bottom: 1rem;
+}
+
+.site-header nav a {
+  color: var(--ink-dim);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: color 150ms ease;
+}
+
+.site-header nav a:hover,
+.site-header nav a:focus-visible {
+  color: var(--gold-light);
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.hero h1 {
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 0;
+  background: linear-gradient(120deg, var(--gold-light), var(--gold) 60%, var(--gold-light));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tagline {
+  margin: 0.5rem 0 0;
+  color: var(--ink-dim);
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
 /* Book and instrument sit side by side, aligned along the same row --
    wraps back to stacked once the pair no longer fits (each still has its
    own min(92vw, …) cap, so this needs no extra media query). */
 .stage {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 2rem;
+  gap: 3rem;
+  padding: 1rem 0 2rem;
 }
 
 a {
-  color: #0b5fff;
+  color: var(--gold-light);
 }
 
 .key {
@@ -37,7 +94,7 @@ a {
 }
 
 .key:focus-visible {
-  outline: 3px solid #0b5fff;
+  outline: 3px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -105,6 +162,7 @@ a {
 }
 
 .book-cover-title {
+  font-family: "Fraunces", ui-serif, Georgia, serif;
   font-size: clamp(1.1rem, 4vw, 1.6rem);
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -168,7 +226,7 @@ a {
   border-radius: 0.5rem;
   background: #faf3e3;
   box-shadow:
-    0 0.5rem 1.5rem rgba(0, 0, 0, 0.2),
+    0 1rem 2.5rem rgba(0, 0, 0, 0.45),
     inset 0 0 0 1px rgba(0, 0, 0, 0.06);
 }
 
@@ -208,35 +266,39 @@ a {
   height: 2.25rem;
   border: none;
   border-radius: 50%;
-  background: #e5e9f0;
+  background: #3a2420;
+  color: var(--gold-light);
   font-size: 1.1rem;
   cursor: pointer;
+  transition: background-color 120ms ease;
 }
 
 .book-nav-btn:hover:not(:disabled) {
-  background: #d3dae6;
+  background: #5c342b;
 }
 
 .book-nav-btn:disabled {
-  opacity: 0.4;
+  opacity: 0.35;
   cursor: default;
 }
 
 .book-page-indicator {
   min-width: 3.5rem;
   text-align: center;
-  color: #8a5a2b;
+  color: var(--gold-light);
   font-weight: 600;
   font-size: 0.9rem;
 }
 
 .tune h3 {
   margin: 0 0 0.35rem;
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  color: #3a2410;
 }
 
 .tune-notes {
   margin: 0 0 0.6rem;
-  color: #333a45;
+  color: #6b4a2a;
   font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
 }
 
@@ -252,11 +314,12 @@ a {
   justify-content: center;
   border: none;
   border-radius: 0.5rem;
-  background: #e5e9f0;
-  color: #333a45;
+  background: #ecdfc4;
+  color: #4a3423;
   width: 2.25rem;
   height: 2.25rem;
   padding: 0;
+  transition: background-color 120ms ease;
 }
 
 .tune-play svg,
@@ -267,7 +330,7 @@ a {
 
 .tune-play:hover:not(:disabled),
 .tune-stop:hover:not(:disabled) {
-  background: #d3dae6;
+  background: #dfcda0;
 }
 
 .tune-play:disabled,
@@ -286,6 +349,7 @@ a {
   aspect-ratio: 1 / 1;
   margin: 0 auto;
   touch-action: none;
+  filter: drop-shadow(0 1rem 2.5rem rgba(0, 0, 0, 0.55));
 }
 
 .handpan-shell {
@@ -341,19 +405,21 @@ a {
 
 .label-toggle {
   display: block;
-  margin: 1rem auto 0;
-  padding: 0.5rem 1rem;
-  border: none;
+  margin: 1.25rem auto 0;
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(244, 223, 174, 0.25);
   border-radius: 999px;
-  background: #e5e9f0;
-  color: #333a45;
+  background: rgba(244, 223, 174, 0.08);
+  color: var(--ink);
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
 }
 
 .label-toggle:hover {
-  background: #d3dae6;
+  background: rgba(244, 223, 174, 0.16);
+  border-color: rgba(244, 223, 174, 0.4);
 }
 
 .note-key:hover {
