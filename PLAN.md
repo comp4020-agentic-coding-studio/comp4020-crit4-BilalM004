@@ -105,7 +105,12 @@ Each bullet is one deliverable to pick up in its own future chat:
   keys as real `<button>` elements with accessible labels), active/held
   visual state, and the loop slot controls + playing/muted/empty indicators.
   Normal-key and tune-key rendering + held-state toggle done; loop slot
-  controls still pending.
+  controls still pending. The 10 note keys render as `renderHandpan()`: a
+  drawn (SVG, not photographed — no image licence to track) handpan shell
+  with the letters laid out as real `<button>`s on the ring-around-a-centre-
+  "ding" positions a handpan's tone fields actually sit in (`a` centred as
+  the ding, `s d f g h j k l ;` spaced evenly around it) — purely a visual/
+  layout change, same trigger functions and hold behaviour as before.
 - [x] `src/scripts/main.ts` — replaces the starter placeholder; wires the above
   together. (Runs as an Astro module script placed after the markup, so no
   `DOMContentLoaded` listener is needed — will need one added if loop

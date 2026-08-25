@@ -1,7 +1,7 @@
 import { getAudioContext, resumeOnFirstGesture } from "./audio/context";
 import { HandpanNote } from "./audio/handpan";
 import { playTune, TUNE_LABELS, type TuneId } from "./audio/tunes";
-import { renderKeyboard, renderTuneKeys, setKeyHeld, type TuneKeyInfo } from "./ui";
+import { renderHandpan, renderTuneKeys, setKeyHeld, type TuneKeyInfo } from "./ui";
 
 /** QWERTY home row, white-key style -- the common web-synth convention. */
 export const NOTE_KEY_ORDER = ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";"] as const;
@@ -26,7 +26,7 @@ const NOTE_FREQUENCIES: ReadonlyMap<string, number> = new Map(
  * `tuneKeysEl`, then wires pointer and physical-key input -- for both --
  * to the same trigger functions. */
 export function wireKeyboard(root: HTMLElement, keyboardEl: HTMLElement, tuneKeysEl: HTMLElement): void {
-  renderKeyboard(keyboardEl, NOTE_KEY_ORDER);
+  renderHandpan(keyboardEl, NOTE_KEY_ORDER);
 
   const tuneKeys: TuneKeyInfo[] = Object.entries(TUNE_KEY_MAP).map(([key, id]) => ({
     key,

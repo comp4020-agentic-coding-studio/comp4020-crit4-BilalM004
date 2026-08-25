@@ -15,37 +15,14 @@ a {
   color: #0b5fff;
 }
 
-.keyboard {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 2rem;
-  touch-action: none;
-}
-
 .key {
-  flex: 1 1 3rem;
-  min-width: 2.75rem;
-  min-height: 4.5rem;
   border: none;
-  border-radius: 0.5rem;
-  background: #e5e9f0;
   color: #1a1a1a;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 80ms ease, transform 80ms ease;
   user-select: none;
-}
-
-.key:hover {
-  background: #d3dae6;
-}
-
-.key.held {
-  background: #0b5fff;
-  color: #fff;
-  transform: scale(0.96);
 }
 
 .key:focus-visible {
@@ -62,8 +39,10 @@ a {
 }
 
 .tune-key {
-  background: #f4dfae;
   flex: 1 1 6rem;
+  min-height: 4.5rem;
+  border-radius: 0.5rem;
+  background: #f4dfae;
 }
 
 .tune-key:hover {
@@ -73,4 +52,46 @@ a {
 .tune-key.held {
   background: #b8791a;
   color: #fff;
+  transform: scale(0.96);
+}
+
+/* The handpan: a drawn shell (.handpan-shell, purely decorative) with real
+   <button>s (.note-key) laid out on top at percentages computed in ui.ts --
+   same ring-around-a-centre-"ding" positions a real handpan's tone fields
+   sit in. */
+.handpan {
+  position: relative;
+  width: min(92vw, 26rem);
+  aspect-ratio: 1 / 1;
+  margin: 2rem auto 0;
+  touch-action: none;
+}
+
+.handpan-shell {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.note-key {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, #8a94a3, #4a5261 55%, #2a2f38 100%);
+  box-shadow:
+    inset 0 0.15rem 0.35rem rgba(0, 0, 0, 0.45),
+    inset 0 -0.1rem 0.2rem rgba(255, 255, 255, 0.08);
+  color: #e8ebf0;
+  font-size: clamp(0.9rem, 4vw, 1.3rem);
+  transform: translate(-50%, -50%) scale(var(--press-scale, 1));
+}
+
+.note-key:hover {
+  background: radial-gradient(circle at 38% 32%, #9aa4b3, #565f6f 55%, #333944 100%);
+}
+
+.note-key.held {
+  --press-scale: 0.92;
+  background: radial-gradient(circle at 38% 32%, #cdd6e6, #7885a0 55%, #454e5f 100%);
+  color: #10131a;
 }
