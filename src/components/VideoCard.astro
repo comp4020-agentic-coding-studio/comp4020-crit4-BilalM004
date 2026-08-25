@@ -1,0 +1,26 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  author: string;
+  url: string;
+}
+
+const { id, title, author, url } = Astro.props;
+---
+
+<figure class="video-card">
+  <div class="video-frame">
+    <iframe
+      src={`https://www.youtube-nocookie.com/embed/${id}`}
+      title={title}
+      loading="lazy"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen
+    ></iframe>
+  </div>
+  <figcaption>
+    <p class="video-title">{title}</p>
+    <p class="video-author">{author} · <a href={url}>Watch on YouTube</a></p>
+  </figcaption>
+</figure>

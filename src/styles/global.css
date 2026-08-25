@@ -24,6 +24,7 @@ main {
 .site-header nav {
   display: flex;
   justify-content: center;
+  gap: 1.75rem;
   padding-bottom: 1rem;
 }
 
@@ -39,6 +40,10 @@ main {
 
 .site-header nav a:hover,
 .site-header nav a:focus-visible {
+  color: var(--gold-light);
+}
+
+.site-header nav a[aria-current="page"] {
   color: var(--gold-light);
 }
 
@@ -430,4 +435,59 @@ a {
   --press-scale: 0.92;
   background: radial-gradient(circle at 38% 32%, #cdd6e6, #7885a0 55%, #454e5f 100%);
   color: #10131a;
+}
+
+/* Examples and Learn pages: a grid of embedded videos, one .video-card each. */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  gap: 2rem;
+  max-width: 54rem;
+  margin: 0 auto;
+}
+
+.video-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(244, 223, 174, 0.04);
+  border: 1px solid rgba(244, 223, 174, 0.15);
+  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.35);
+}
+
+.video-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #000;
+}
+
+.video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.video-title {
+  margin: 0;
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  font-weight: 600;
+  color: var(--gold-light);
+  font-size: 1.05rem;
+}
+
+.video-author {
+  margin: 0;
+  color: var(--ink-dim);
+  font-size: 0.85rem;
+}
+
+.video-author a {
+  color: var(--gold);
 }

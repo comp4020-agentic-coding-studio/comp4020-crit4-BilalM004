@@ -7,6 +7,12 @@ interface Props {
 }
 
 const { title, description = "Replace this with one sentence saying what this page is. A search result and a link preview both show it." } = Astro.props;
+
+// build.format "preserve" (astro.config.ts) ships this page's own file name
+// (index.html, examples.html, ...) as the last path segment, so comparing
+// against that -- rather than the full pathname -- survives the base path.
+const currentFile = Astro.url.pathname.replace(/\/$/, "").split("/").pop();
+const isCurrent = (file: string) => currentFile === file || (file === "index.html" && !currentFile);
 ---
 
 <!doctype html>
@@ -38,6 +44,13 @@ const { title, description = "Replace this with one sentence saying what this pa
     />
   </head>
   <body>
+    <header class="site-header">
+      <nav aria-label="Primary">
+        <a href="./" aria-current={isCurrent("index.html") ? "page" : undefined}>Play</a>
+        <a href="./examples.html" aria-current={isCurrent("examples.html") ? "page" : undefined}>Examples</a>
+        <a href="./learn.html" aria-current={isCurrent("learn.html") ? "page" : undefined}>Learn</a>
+      </nav>
+    </header>
     <slot />
   </body>
 </html>

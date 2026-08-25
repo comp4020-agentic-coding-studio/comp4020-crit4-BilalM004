@@ -1,0 +1,30 @@
+---
+import Layout from "../layouts/Layout.astro";
+import VideoCard from "../components/VideoCard.astro";
+---
+
+<Layout
+  title="Learn the Handpan"
+  description="Two short lessons on how a handpan works and how to start playing one."
+>
+  <main>
+    <div class="hero">
+      <h1>Learn</h1>
+      <p class="tagline">Here are some lessons for guidance.</p>
+    </div>
+    <div class="video-grid">
+      <VideoCard
+        id="HcmZP-43vpQ"
+        title="Meditative Pattern | Handpan Tutorial"
+        author="Malte Marten"
+        url="https://youtu.be/HcmZP-43vpQ"
+      />
+      <VideoCard
+        id="n-wXI7tMOUY"
+        title="Anatomy of a Handpan | Beginner Lesson"
+        author="Handpan 360"
+        url="https://youtu.be/n-wXI7tMOUY"
+      />
+    </div>
+  </main>
+</Layout>
