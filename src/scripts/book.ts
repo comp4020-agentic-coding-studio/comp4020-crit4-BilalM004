@@ -2,7 +2,16 @@ import { getAudioContext, resumeOnFirstGesture } from "./audio/context";
 import { HandpanNote } from "./audio/handpan";
 import { KEY_BY_NOTE, NOTE_BY_KEY } from "./audio/notes";
 import { TUNES, type Tune } from "./book-data";
+import { getLabelMode, onLabelModeChange } from "./label-mode";
 import { renderBookPage, setKeyHeld, setPlayPauseIcon, type TuneControls } from "./ui";
+
+/** The tune's own note names, or the keyboard letters that play them,
+ * depending on the shared label-mode toggle -- joined the same way either
+ * way so the book's note-sequence line reads consistently. */
+function formatNoteSequence(tune: Tune): string {
+  if (getLabelMode() === "notes") return tune.notes.join(" · ");
+  return tune.notes.map((noteName) => (KEY_BY_NOTE.get(noteName) ?? noteName).toUpperCase()).join(" · ");
+}
 
 const NOTE_SECONDS = 0.4;
 const GAP_SECONDS = 0.05;
@@ -46,7 +55,8 @@ export function wireMusicBook(root: HTMLElement, els: BookElements): void {
   let coverHideTimeout: number | undefined;
 
   function renderPage(): void {
-    controls = renderBookPage(els.page, TUNES[pageIndex], handlePlayPauseClick, handleStopClick);
+    const tune = TUNES[pageIndex];
+    controls = renderBookPage(els.page, tune, formatNoteSequence(tune), handlePlayPauseClick, handleStopClick);
     els.indicator.textContent = `${pageIndex + 1} / ${TUNES.length}`;
     els.prev.disabled = pageIndex === 0;
     els.next.disabled = pageIndex === TUNES.length - 1;
@@ -180,6 +190,15 @@ export function wireMusicBook(root: HTMLElement, els: BookElements): void {
     if (event.key === "Escape") close();
     else if (event.key === "ArrowLeft") goToPage(-1);
     else if (event.key === "ArrowRight") goToPage(1);
+  });
+
+  // Re-render the open page's note-sequence text on a label-mode flip
+  // without touching playback -- renderPage() rebuilds fresh controls
+  // defaulting to "stopped", so restore the real playback state after.
+  onLabelModeChange(() => {
+    if (!isOpen) return;
+    renderPage();
+    updateControls();
   });
 }
 

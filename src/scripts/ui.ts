@@ -48,10 +48,13 @@ const HANDPAN_SHELL_SVG = `
 
 /** Renders the note keyboard as a handpan: real, labelled <button>s in the
  * instrument's usual ring-around-a-centre-"ding" layout, over a drawn shell.
- * Each key shows the note it sounds (large) and the QWERTY letter it's
- * mapped to (small) as two distinct labels, since the music book below
- * refers to notes, not letters. Keyboard operability and screen-reader
- * affordance still come from using <button> instead of a styled <div>. */
+ * Each key shows both the note it sounds and the QWERTY letter it's mapped
+ * to; the label-toggle button (wired in main.ts) flips which one reads as
+ * primary via the container's "show-letters" class -- the parens around
+ * whichever label is secondary come from CSS, not markup, so nothing here
+ * needs to change when that toggles. Keyboard operability and
+ * screen-reader affordance still come from using <button> instead of a
+ * styled <div>. */
 export function renderHandpan(container: HTMLElement, notes: readonly HandpanNoteDef[]): void {
   container.innerHTML = HANDPAN_SHELL_SVG;
   const layout = computeHandpanLayout(notes.map((def) => def.key));
@@ -64,7 +67,7 @@ export function renderHandpan(container: HTMLElement, notes: readonly HandpanNot
     button.className = "key note-key";
     button.dataset.key = key;
     button.setAttribute("aria-label", `Play note ${noteName} (key ${key.toUpperCase()})`);
-    button.innerHTML = `<span class="note-name">${noteName}</span><span class="note-key-letter">(${key.toUpperCase()})</span>`;
+    button.innerHTML = `<span class="note-name">${noteName}</span><span class="note-key-letter">${key.toUpperCase()}</span>`;
     button.style.left = `${xPercent}%`;
     button.style.top = `${yPercent}%`;
     button.style.width = `${sizePercent}%`;
@@ -103,16 +106,23 @@ export function setPlayPauseIcon(button: HTMLButtonElement, tune: TuneDisplay, s
   }
 }
 
-/** Renders a single tune -- its title and its note-name sequence for
- * reference only, so the player has to find the notes on the handpan
- * themselves -- plus play/pause and stop buttons that call back into
- * `onPlayPause`/`onStop`. One tune fills the whole page; turning the page
- * calls this again with the next tune. Returns the rendered buttons so the
- * caller can keep updating their icon/label/disabled state as playback
- * progresses, without re-rendering the whole page. */
+/** Renders a single tune -- its title and a note sequence for reference
+ * only (so the player has to find the notes on the handpan themselves),
+ * already formatted by the caller as either note names or keyboard letters
+ * per the label-mode toggle -- plus play/pause and stop buttons that call
+ * back into `onPlayPause`/`onStop`. One tune fills the whole page; turning
+ * the page calls this again with the next tune. Returns the rendered
+ * buttons so the caller can keep updating their icon/label/disabled state
+ * as playback progresses, without re-rendering the whole page.
+ *
+ * `tune` is kept separate from `notesText` (rather than formatting
+ * `tune.notes` here) because the same `tune` is handed back to
+ * `onPlayPause`/`onStop`, and playback needs the real note names to look
+ * up frequencies regardless of what's currently displayed. */
 export function renderBookPage(
   pageEl: HTMLElement,
   tune: TuneDisplay,
+  notesText: string,
   onPlayPause: (tune: TuneDisplay, button: HTMLButtonElement) => void,
   onStop: (tune: TuneDisplay, button: HTMLButtonElement) => void,
 ): TuneControls {
@@ -126,7 +136,7 @@ export function renderBookPage(
 
   const sequence = document.createElement("p");
   sequence.className = "tune-notes";
-  sequence.textContent = tune.notes.join(" · ");
+  sequence.textContent = notesText;
 
   const controls = document.createElement("div");
   controls.className = "tune-controls";

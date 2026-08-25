@@ -1,10 +1,23 @@
 import { wireKeyboard } from "./keyboard";
 import { wireMusicBook } from "./book";
+import { getLabelMode, onLabelModeChange, setLabelMode } from "./label-mode";
 
 const instrument = document.querySelector<HTMLElement>("#instrument");
 const keyboard = document.querySelector<HTMLElement>("#keyboard");
 if (instrument && keyboard) {
   wireKeyboard(instrument, keyboard);
+}
+
+const labelToggle = document.querySelector<HTMLButtonElement>("#label-toggle");
+if (keyboard && labelToggle) {
+  labelToggle.addEventListener("click", () => {
+    setLabelMode(getLabelMode() === "notes" ? "keys" : "notes");
+  });
+  onLabelModeChange((mode) => {
+    keyboard.classList.toggle("show-letters", mode === "keys");
+    labelToggle.textContent = mode === "keys" ? "Show note names" : "Show keyboard letters";
+    labelToggle.setAttribute("aria-pressed", String(mode === "keys"));
+  });
 }
 
 const bookCover = document.querySelector<HTMLButtonElement>("#book-cover");

@@ -7,8 +7,19 @@ body {
 }
 
 main {
-  max-width: 40rem;
+  max-width: 54rem;
   margin: 0 auto;
+}
+
+/* Book and instrument sit side by side, aligned along the same row --
+   wraps back to stacked once the pair no longer fits (each still has its
+   own min(92vw, …) cap, so this needs no extra media query). */
+.stage {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
 }
 
 a {
@@ -37,6 +48,11 @@ a {
   width: min(92vw, 21rem);
   margin: 0 auto;
   display: grid;
+  /* Without an explicit track, the implicit column sizes to its content's
+     max-content width -- with a page grid.tune-notes line, this ignores
+     .music-book's own width and pushes .book-pages wide enough to overflow
+     past the page. minmax(0, 1fr) forces it back down to the container. */
+  grid-template-columns: minmax(0, 1fr);
   perspective: 1200px;
 }
 
@@ -268,7 +284,7 @@ a {
   position: relative;
   width: min(92vw, 26rem);
   aspect-ratio: 1 / 1;
-  margin: 2rem auto 0;
+  margin: 0 auto;
   touch-action: none;
 }
 
@@ -296,15 +312,48 @@ a {
   transform: translate(-50%, -50%) scale(var(--press-scale, 1));
 }
 
-.note-name {
+.note-name,
+.note-key-letter {
   font-size: 1em;
   font-weight: 700;
+  opacity: 1;
 }
 
-.note-key-letter {
+/* Whichever label isn't primary shrinks, dims, and grows parens -- driven
+   by .handpan's own "show-letters" class (toggled in main.ts) rather than
+   a per-key data attribute, so flipping it re-styles every key at once. */
+.handpan:not(.show-letters) .note-key-letter,
+.handpan.show-letters .note-name {
   font-size: 0.6em;
   font-weight: 500;
   opacity: 0.75;
+}
+
+.handpan:not(.show-letters) .note-key-letter::before,
+.handpan.show-letters .note-name::before {
+  content: "(";
+}
+
+.handpan:not(.show-letters) .note-key-letter::after,
+.handpan.show-letters .note-name::after {
+  content: ")";
+}
+
+.label-toggle {
+  display: block;
+  margin: 1rem auto 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: #e5e9f0;
+  color: #333a45;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.label-toggle:hover {
+  background: #d3dae6;
 }
 
 .note-key:hover {

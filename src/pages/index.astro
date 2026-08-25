@@ -13,23 +13,28 @@ import Layout from "../layouts/Layout.astro";
   </header>
   <main>
     <h1>An Instrument</h1>
-    <section id="music-book" class="music-book">
-      <button id="book-cover" class="book-cover" type="button" aria-expanded="false" aria-controls="book-pages">
-        <span class="book-cover-title">Music Book</span>
-        <span class="book-cover-hint">Click to open</span>
-      </button>
-      <div id="book-pages" class="book-pages" hidden>
-        <button id="book-close" class="close-book" type="button" aria-label="Close music book">×</button>
-        <div class="book-page" id="book-page"></div>
-        <div class="book-nav">
-          <button id="book-prev" class="book-nav-btn" type="button" aria-label="Previous page">‹</button>
-          <span id="book-page-indicator" class="book-page-indicator"></span>
-          <button id="book-next" class="book-nav-btn" type="button" aria-label="Next page">›</button>
+    <div class="stage">
+      <section id="music-book" class="music-book">
+        <button id="book-cover" class="book-cover" type="button" aria-expanded="false" aria-controls="book-pages">
+          <span class="book-cover-title">Music Book</span>
+          <span class="book-cover-hint">Click to open</span>
+        </button>
+        <div id="book-pages" class="book-pages" hidden>
+          <button id="book-close" class="close-book" type="button" aria-label="Close music book">×</button>
+          <div class="book-page" id="book-page"></div>
+          <div class="book-nav">
+            <button id="book-prev" class="book-nav-btn" type="button" aria-label="Previous page">‹</button>
+            <span id="book-page-indicator" class="book-page-indicator"></span>
+            <button id="book-next" class="book-nav-btn" type="button" aria-label="Next page">›</button>
+          </div>
         </div>
+      </section>
+      <div id="instrument">
+        <div id="keyboard" class="handpan"></div>
+        <button id="label-toggle" class="label-toggle" type="button" aria-pressed="false">
+          Show keyboard letters
+        </button>
       </div>
-    </section>
-    <div id="instrument">
-      <div id="keyboard" class="handpan"></div>
     </div>
   </main>
   <script src="../scripts/main.ts"></script>
