@@ -4,4 +4,4 @@ Reflecting what the latest lecture talked about - knowing what to give Claude (a
 
 # 2. What did this work change about who I want to be as a software developer?
 
-This crit showcased to me how, yes Claude can write the code significantly faster and achieve what is specified, but the art of knowing what to create, and experiencing it as a human, is a skill that is needed, and I want to be involved with - the creativity and experience should be designed by a human, for huamns.
+This crit showcased to me how, yes Claude can write the code significantly faster and achieve what is specified, but the art of knowing what to create, and experiencing it as a human, is a skill that is needed, and I want to be involved with - the creativity and experience should be designed by a human, for humans.
