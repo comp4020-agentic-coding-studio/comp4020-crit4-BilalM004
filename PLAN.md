@@ -1,8 +1,7 @@
 # CRIT4 "An Instrument" — a real handpan, with a music book and a notepad
 
 This documents the finished prototype, not a to-do list to keep working
-through. The loop grid described in earlier planning was descoped; what's
-below is the shipped scope.
+through.
 
 ## Context
 
@@ -25,13 +24,10 @@ player real tunes on a real instrument instead of a novelty, and sidesteps
 sourcing/copyright questions entirely (the book's placeholder tunes are
 traditional/public-domain melodies, not recreations of proprietary sounds).
 
-A **loop grid** (fixed-tempo clock, 2 loop slots, record/mute/clear per slot)
-was planned as a fourth feature but never started, and has been dropped from
-scope for this deliverable — the handpan, music book, and notepad below are
-the final feature set. Expressiveness comes from hold-duration shaping: the
-longer a key is held, the more the filter cutoff drifts open, which works
-identically across mouse, touch, and keyboard input and needs no
-drag-tracking.
+The handpan, music book, and notepad below are the final feature set.
+Expressiveness comes from hold-duration shaping: the longer a key is held,
+the more the filter cutoff drifts open, which works identically across
+mouse, touch, and keyboard input and needs no drag-tracking.
 
 Beyond the original plan, two things were added once the core instrument was
 working: a **notes-played notepad** (a toggleable live transcript of what the
@@ -138,13 +134,6 @@ single-page prototype reads as a small site rather than one dense screen.
 - [x] `spec/invariants.test.ts` — per-page mechanical checks (lang attr,
   title, meta description, og:image, viewport, nav landmark, one `<h1>`,
   alt text) run across all three built pages.
-
-### Descoped (not built)
-
-- `src/scripts/audio/loop.ts` (`LoopGrid`/loop scheduler), the loop-grid
-  controls in `ui.ts`/`index.astro`, and `spec/instrument.test.ts`'s
-  loop-specific assertions — the loop grid was dropped from scope; see
-  Context above.
 
 ## Verification
 
